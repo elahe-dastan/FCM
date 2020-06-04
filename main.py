@@ -1,61 +1,32 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import FCM
 
 # First of all I have to read the data
 header = pd.read_csv('test.csv', nrows=0).columns.tolist()
 data = pd.read_csv("sample1.csv")
 
-# Plot the data
-fig = plt.figure()
-f = fig.add_subplot()
-for h in header:
-    f.scatter(data[h], c='b')
+if len(header) == 2:
+    # Plot the data
+    fig = plt.figure()
+    f = fig.add_subplot()
+    f.scatter(data[header[0]], data[header[1]], c='b')
 
+max_num_clusters = 11
 x = data.values
 num_data = len(x)
-max_num_clusters = 11
 steps = 50
+minimum_error = 10000000
+best_num_clusters = 0
 
 # Defining answer
 for c in range(max_num_clusters):
-    # Initialize U matrix
-    U = np.random.rand(num_data, c)
-    C = np.empty((c, len(header)))
+    e, centers = FCM.run(num_data, c, header, steps, x)
+    if e < minimum_error:
+        minimum_error = e
+        best_num_clusters = c
 
-    m = 2
-
-    # number of steps
-    for k in range(steps):
-        previous_U = np.copy(U)
-        # the center of each cluster
-        for j in range(c):
-            numerator = 0
-            denominator = 0
-            # number of data
-            for i in range(num_data):
-                numerator += np.power(U[i, j], m) * x[i]
-                denominator += np.power(U[i, j], m)
-
-            C[j] = numerator / denominator
-
-        for jj in range(c):
-            for ii in range(num_data):
-                numerator = x[ii] - C[jj]
-                numerator_norm = np.linalg.norm(numerator)
-                numerator_norm = np.power(numerator_norm, 2 / (m - 1))
-                numerator_norm = 1 / numerator_norm
-                denominator = 0
-                for center in range(4):
-                    d = x[ii] - C[center]
-                    d_norm = np.linalg.norm(d)
-                    d_norm = np.power(d_norm, 2 / (m - 1))
-                    denominator += 1 / d_norm
-
-                U[ii, jj] = numerator_norm / denominator
-
-        if np.linalg.norm(U - previous_U) < 0.3:
-            break
-
-    f.scatter(C[:, 0], C[:, 1], c='red')
+if len(header) == 2:
+    for ce in range(best_num_clusters):
+        f.scatter(centers[ce, 0], centers[ce, 1], c='red')
     plt.show()
