@@ -20,13 +20,15 @@ minimum_error = 10000000
 best_num_clusters = 0
 
 # Defining answer
-for c in range(max_num_clusters):
+for c in range(1, max_num_clusters):
     e, centers = FCM.run(num_data, c, header, steps, x)
     if e < minimum_error:
         minimum_error = e
         best_num_clusters = c
 
 if len(header) == 2:
+    ce = 0
     for ce in range(best_num_clusters):
         f.scatter(centers[ce, 0], centers[ce, 1], c='red')
     plt.show()
+    print("vhj")

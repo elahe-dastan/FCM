@@ -21,7 +21,7 @@ def run(num_data, c, header, steps, data):
                 numerator += np.power(u[i, j], m) * data[i]
                 denominator += np.power(u[i, j], m)
 
-            C[j] = numerator / denominator
+            centers[j] = numerator / denominator
 
         for jj in range(c):
             for ii in range(num_data):
@@ -45,8 +45,9 @@ def run(num_data, c, header, steps, data):
     e = 0
     for jjj in range(c):
         for iii in range(num_data):
-            membership = u[iii, jjj] * data[iii]
-            distance = np.linalg.norm(membership - centers[jjj])
-            e += distance
+            distance = np.linalg.norm(data[iii] - centers[jjj])
+            membership = u[iii, jjj] * distance
+            e += membership
+    e
 
     return e, centers
