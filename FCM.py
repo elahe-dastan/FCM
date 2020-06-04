@@ -44,10 +44,14 @@ def run(num_data, c, header, steps, data):
     # Evaluation
     e = 0
     for jjj in range(c):
+        size = 0
+        cluster_e = 0
         for iii in range(num_data):
             distance = np.linalg.norm(data[iii] - centers[jjj])
             membership = u[iii, jjj] * distance
-            e += membership
-    e
+            if u[iii, jjj] > 0.5:
+                size += 1
+            cluster_e += membership
+        e += cluster_e/size
 
     return e, centers
