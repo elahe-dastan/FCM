@@ -2,38 +2,29 @@ import numpy as np
 
 
 class FCM:
-    def __init__(self):
-
     # c is the number of clusters
-    def run(self,num_data, c, header, steps, data):
-        # Initialize U matrix
-        u = np.random.rand(num_data, c)
-        centers = np.empty((c, len(header)))
+    def __init__(self, num_data, c, header, steps, data):
+        self.num_data = num_data
+        self.c = c
+        self.header = header
+        self.steps = steps
+        self.data = data
+        self.u = np.empy(num_data, c)
+        self.centers = np.empty((self.c, len(self.header)))
+        self.m = 2
 
-        m = 2
+    def run(self):
+        # Initialize U matrix
+        self.u = np.random.rand(self.num_data, self.c)
 
         # number of steps
-        for k in range(steps):
-            previous_u = np.copy(u)
+        for k in range(self.steps):
+            previous_u = np.copy(self.u)
 
-            find_center(c, num_data, u, data, m, centers)
+            self.find_center()
 
-            for jj in range(c):
-                for ii in range(num_data):
-                    numerator = data[ii] - centers[jj]
-                    numerator_norm = np.linalg.norm(numerator)
-                    numerator_norm = np.power(numerator_norm, 2 / (m - 1))
-                    numerator_norm = 1 / numerator_norm
-                    denominator = 0
-                    for center in range(c):
-                        d = data[ii] - centers[center]
-                        d_norm = np.linalg.norm(d)
-                        d_norm = np.power(d_norm, 2 / (m - 1))
-                        denominator += 1 / d_norm
-
-                    u[ii, jj] = numerator_norm / denominator
-
-            if np.linalg.norm(u - previous_u) < 0.3:
+            self.change_membership()
+            if np.linalg.norm(self.u - previous_u) < 0.3:
                 break
 
         # Evaluation
@@ -51,14 +42,30 @@ class FCM:
 
         return e, centers
 
-    def find_center(self, c, num_data, u, data, m, centers):
+    def find_center(self):
         # the center of each cluster
         for j in range(c):
             numerator = 0
             denominator = 0
             # number of data
-            for i in range(num_data):
-                numerator += np.power(u[i, j], m) * data[i]
-                denominator += np.power(u[i, j], m)
+            for i in range(self.num_data):
+                numerator += np.power(self.u[i, j], self.m) * self.data[i]
+                denominator += np.power(self.u[i, j], self.m)
 
-            centers[j] = numerator / denominator
+            self.centers[j] = numerator / denominator
+
+    def change_membership(self):
+        for j in range(self.c):
+            for i in range(self.num_data):
+                numerator = self.data[i] - self.centers[j]
+                numerator_norm = np.linalg.norm(numerator)
+                numerator_norm = np.power(numerator_norm, 2 / (self.m - 1))
+                numerator_norm = 1 / numerator_norm
+                denominator = 0
+                for center in range(self.c):
+                    d = self.data[i] - self.centers[center]
+                    d_norm = np.linalg.norm(d)
+                    d_norm = np.power(d_norm, 2 / (self.m - 1))
+                    denominator += 1 / d_norm
+
+                self.u[i, j] = numerator_norm / denominator
