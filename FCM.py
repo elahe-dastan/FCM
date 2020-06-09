@@ -60,14 +60,14 @@ class FCM:
     def evaluation(self):
         e = 0
         for j in range(self.c):
-            # size = 0
+            size = 1
             cluster_e = 0
             for i in range(self.num_data):
                 distance = np.linalg.norm(self.data[i] - self.centers[j])
                 membership = self.u[i, j] * distance
-                # if self.u[i, j] > 0.5:
-                    # size += 1
+                if self.u[i, j] > (1/(size+2)):
+                    size += 1
                 cluster_e += membership
-            e += cluster_e
+            e += cluster_e/size
 
         return e, self.centers

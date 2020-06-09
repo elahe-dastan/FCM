@@ -24,7 +24,7 @@ minimum_error = 10000000
 best_num_clusters = 0
 
 # Defining answer
-for c in range(1, max_num_clusters):
+for c in range(2, max_num_clusters):
     fcm = FCM.FCM(num_data, c, header, steps, x)
     e, centers = fcm.run()
     print(e)
