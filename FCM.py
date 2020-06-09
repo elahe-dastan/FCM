@@ -27,24 +27,11 @@ class FCM:
             if np.linalg.norm(self.u - previous_u) < 0.3:
                 break
 
-        # Evaluation
-        e = 0
-        for jjj in range(c):
-            size = 0
-            cluster_e = 0
-            for iii in range(num_data):
-                distance = np.linalg.norm(data[iii] - centers[jjj])
-                membership = u[iii, jjj] * distance
-                if u[iii, jjj] > 0.5:
-                    size += 1
-                cluster_e += membership
-            e += cluster_e / size
-
-        return e, centers
-
+        return self.evaluation()
+        
     def find_center(self):
         # the center of each cluster
-        for j in range(c):
+        for j in range(self.c):
             numerator = 0
             denominator = 0
             # number of data
@@ -69,3 +56,18 @@ class FCM:
                     denominator += 1 / d_norm
 
                 self.u[i, j] = numerator_norm / denominator
+
+    def evaluation(self):
+        e = 0
+        for j in range(self.c):
+            size = 0
+            cluster_e = 0
+            for i in range(self.num_data):
+                distance = np.linalg.norm(self.data[i] - self.centers[j])
+                membership = self.u[i, j] * distance
+                if self.u[i, j] > 0.5:
+                    size += 1
+                cluster_e += membership
+            e += cluster_e / size
+
+        return e, self.centers
