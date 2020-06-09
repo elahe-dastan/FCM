@@ -1,10 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import FCM
+import sys
 
-# First of all I have to read the data
-header = pd.read_csv('test.csv', nrows=0).columns.tolist()
-data = pd.read_csv("sample1.csv")
+# I get the name if the data file as an argument
+file_name = sys.argv[1]
+
+# I have to read the data from the file
+header = pd.read_csv(file_name, nrows=0).columns.tolist()
+data = pd.read_csv(file_name)
 
 if len(header) == 2:
     # Plot the data
