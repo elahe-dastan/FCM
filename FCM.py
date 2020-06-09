@@ -9,7 +9,7 @@ class FCM:
         self.header = header
         self.steps = steps
         self.data = data
-        self.u = np.empy(num_data, c)
+        self.u = np.empty((num_data, c))
         self.centers = np.empty((self.c, len(self.header)))
         self.m = 2
 
@@ -28,7 +28,7 @@ class FCM:
                 break
 
         return self.evaluation()
-        
+
     def find_center(self):
         # the center of each cluster
         for j in range(self.c):
@@ -60,14 +60,14 @@ class FCM:
     def evaluation(self):
         e = 0
         for j in range(self.c):
-            size = 0
+            # size = 0
             cluster_e = 0
             for i in range(self.num_data):
                 distance = np.linalg.norm(self.data[i] - self.centers[j])
                 membership = self.u[i, j] * distance
-                if self.u[i, j] > 0.5:
-                    size += 1
+                # if self.u[i, j] > 0.5:
+                    # size += 1
                 cluster_e += membership
-            e += cluster_e / size
+            e += cluster_e
 
         return e, self.centers

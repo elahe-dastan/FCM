@@ -25,7 +25,8 @@ best_num_clusters = 0
 
 # Defining answer
 for c in range(1, max_num_clusters):
-    e, centers = FCM.run(num_data, c, header, steps, x)
+    fcm = FCM.FCM(num_data, c, header, steps, x)
+    e, centers = fcm.run()
     print(e)
     if e < minimum_error:
         minimum_error = e
